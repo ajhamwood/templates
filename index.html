@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="key, words">
+  <meta name="description" content="Description.">
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <style>
+body { margin: 0 }
+  </style>
+</head>
+<body>
+  <!-- html content goes here -->
+  <script>
+// Utilities
+//   $ enhances querySelectorAll
+function $ (sel, node) { return Array.prototype.slice.call( (node || document).querySelectorAll(sel) ) }
+
+//   $.addEvents enhances addEventListener
+$.addEvents = function (obj, node) {
+  for (var q in obj) for (var e in obj[q])
+    for (var ns = q ? ($(q, node) || []) : [window, document], es = e.split(' '), i = 0; i < es.length; i++)
+      ns.forEach(n => n.addEventListener(es[i], obj[q][e].bind(n))) };
+
+//   $.load enhances importNode
+$.load = function (id, query) {
+  (typeof query === 'undefined' ? [document.body] : $(query))
+    .forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) };
+
+//   $.Machine creates state machines for the page
+$.Machine = function (state) {
+  let es = {}, v = Object.values, r = Promise.resolve.bind(Promise); Object.seal(state);
+  return Object.assign(this, {
+    getState () { return state },
+    on (e, fn) { (es[e] = es[e] || {})[fn.name] = fn; return this },
+    emit (e, ...args) { return e in es && v(es[e]).reduce((s, fn) => (fn.apply(s, args), s), state) },
+    emitAsync (e, ...args) { return e in es && v(es[e]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) },
+    stop (e, fname = '') { e in es && delete es[e][fname]; return this } }) };
+
+// Page state
+let app = new $.Machine({}).on('', function () {});
+
+// UI events
+$.addEvents({
+  '': {
+    load () {}
+  }
+})
+  </script>
+  <noscript><h6>Only viewable with JavaScript enabled.</h6></noscript>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="key, words">
+  <meta name="description" content="Short Description">
+  <link rel="icon" type="image/x-icon" href="data:image/png;base64,">
+  <%= assets(:css) %>
+</head>
+<body>
+  <%= yield %>
+  <%= assets(:js) %>
+  <noscript><h6>Only viewable with JavaScript enabled.</h6></noscript>
+</body>
+</html>

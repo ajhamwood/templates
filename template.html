@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+  <title>Title</title>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name='keywords' content='key, words'>
+  <meta name='description' content='Description.'>
+  <link rel='icon' type='image/x-icon' href='data:image/x-icon;base64,'>
+  <style>
+html, body { height: 100% }
+body { margin: 0 }
+  </style>
+</head>
+<body>
+  <!-- html content goes here -->
+  <script>
+// Utilities
+//   $ enhances querySelectorAll
+var $ = Object.assign((sel, node = document) => [...node.querySelectorAll(sel).values()], {
+
+//   $.Machine creates state machines for the page
+  Machine: function (state) {
+    let es = {}, v = Object.values, r = Promise.resolve.bind(Promise); Object.seal(state);
+    return Object.assign(this, {
+      getState () { return state },
+      on (e, fn) { (es[e] = es[e] || {})[fn.name] = fn; return this },
+      stop (e, fname = '') { e in es && delete es[e][fname]; return this },
+      emit (e, ...args) { return e in es && v(es[e]).reduce((s, fn) => (fn.apply(s, args), s), state) },
+      emitAsync (e, ...args) { return e in es && v(es[e]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
+
+//   $.pipe manages event chronology
+  pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || Promise.resolve())
+    .then(() => Promise.all(ands.map(ors => Array.prototype.isPrototypeOf(ors) ? Promise.race(ors) : ors))))({}),
+
+//   $.targets recursively adds event listeners to objects, indexed by regex
+// TODO: removeEventListener?
+  targets (obj, target = window) {
+    let p, use = (m, fn) => { for (let es = p.split(' '), i = 0; i < es.length; i++) target[m](es[i], fn) };
+    for (p in obj) if (Function.prototype.isPrototypeOf(obj[p])) {
+      if (EventTarget.prototype.isPrototypeOf(target)) use('addEventListener', obj[p].bind(target));
+      else if ($.Machine.prototype.isPrototypeOf(target)) use('on', obj[p])
+    } else if (p in target) $.targets(obj[p], target[p]);
+    else for (let k in target) if (k.match(new RegExp(`^${p}$`))) $.targets(obj[p], target[k]) },
+
+//   $.queries adds event listeners to DOM nodes, indexed by selector
+  queries (obj, node) {
+    for (let q in obj) for (let e in obj[q]) for (let ns = $(q, node) || [], es = e.split(' '), i = 0; i < es.length; i++)
+      ns.forEach(n => n.addEventListener(es[i], obj[q][e].bind(n))) },
+
+//   $.load enhances importNode
+  load (id, dest = 'body') {
+    let stamp = document.importNode($('template#' + id)[0].content, true);
+    return $(dest).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
+
+// Page state
+var app = new $.Machine({});
+
+// Events
+$.targets({
+  load () {},
+  app: { '' () {} }
+});
+$.queries({})
+  </script>
+  <noscript><h6>Only viewable with JavaScript enabled.</h6></noscript>
+</body>
+</html>

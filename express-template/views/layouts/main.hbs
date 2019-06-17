@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <title>{{{block 'title'}}}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="key, words">
+  <meta name="description" content="Description.">
+  <link rel="icon" type="image/x-icon" href="data:image/png;base64,">
+  {{{block 'style'}}}
+</head>
+<body class="{{{block 'class'}}}">
+  {{{body}}}
+  <script>
+  // Utilities
+  //   $ enhances querySelectorAll
+  const $ = Object.assign((sel, node = document) => [...node.querySelectorAll(sel).values()], {
+
+  //   $.Machine creates state machines for the page
+    Machine: function (state) {
+      let es = {}, v = Object.values, r = Promise.resolve.bind(Promise); Object.seal(state);
+      return Object.assign(this, {
+        getState () { return state },
+        on (e, fn) { (es[e] = es[e] || {})[fn.name] = fn; return this },
+        stop (e, fname = '') { e in es && delete es[e][fname]; return this },
+        emit (e, ...args) { return e in es && v(es[e]).reduce((s, fn) => (fn.apply(s, args), s), state) },
+        emitAsync (e, ...args) { return e in es && v(es[e]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
+
+  //   $.targets adds event listeners to objects, indexed by regex
+    targets (obj, target = window) {
+      for (let t in obj) Object.keys(target).filter(x => x.match(new RegExp(`^${t}$`))).forEach(k => {
+        if (EventTarget.prototype.isPrototypeOf(target[k])) for (let e in obj[t]) target[k].addEventListener(e, obj[t][e].bind(target[k]));
+        else if ($.Machine.prototype.isPrototypeOf(target[k])) for (let e in obj[t]) target[k].on(e, obj[t][e]) }) },
+
+  //   $.queries adds event listeners to DOM nodes, indexed by selector
+    queries (obj, node) {
+      for (let q in obj) for (let e in obj[q]) for (let ns = $(q, node) || [], es = e.split(' '), i = 0; i < es.length; i++)
+        ns.forEach(n => n.addEventListener(es[i], obj[q][e].bind(n))) },
+
+  //   $.load enhances importNode
+    load (id, dest = 'body') { $(dest).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } })
+  </script>
+  {{{block 'scripts'}}}
+  <noscript><h6>Only viewable with JavaScript enabled.</h6></noscript>
+</body>
+</html>

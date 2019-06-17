@@ -1,0 +1,36 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "description": "Example description.",
+  "main": "app.js",
+  "author": "Aidan Hamwood",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajhamwood/example.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "dev": "nf run nodemon app.js --",
+    "seed": "scripts/seed.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "connect-mongo": "^2.0.3",
+    "debug": "^4.1.1",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.0",
+    "express-hbs": "^2.1.2",
+    "express-rate-limit": "^4.0.1",
+    "express-session": "^1.16.1",
+    "helmet": "^3.18.0",
+    "mongodb": "^3.2.6",
+    "multer": "^1.4.1"
+  },
+  "engines": {
+    "node": ">=10.15.3"
+  },
+  "devDependencies": {
+    "foreman": "^3.0.1",
+    "nodemon": "^1.19.0"
+  }
+}
