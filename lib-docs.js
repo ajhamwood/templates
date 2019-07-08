@@ -70,10 +70,12 @@ $.pipe = (ps =>
 //     @param {ParentNode} [node = document] - Optional selector root
 
 $.queries = function (obj, node) {
-  for (let q in obj)
+  for (let q in obj) {
+    let ns = $(q, node) || [];
     for (let e in obj[q])
-      for (let ns = $(q, node) || [], es = e.split(' '), i = 0; i < es.length; i++)
-        ns.forEach(n => n.addEventListener(es[i], obj[q][e].bind(n)))
+      e.split(' ').forEach(t =>
+        ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n))))
+  }
 },
 
 
@@ -83,15 +85,13 @@ $.queries = function (obj, node) {
 //     - Targetable properties must inherit from either EventTarget or $.Machine
 //     @param {Object} [target = window] - Optional property root
 
-$.targets = function (obj, target = window) {
-  let p,
-      use = (m, fn) => {
-        for (let es = p.split(' '), i = 0; i < es.length; i++) target[m](es[i], fn)
-      };
+$.targets = function (obj, target = window, p) {
   for (p in obj)
     if (Function.prototype.isPrototypeOf(obj[p])) {
-      if (EventTarget.prototype.isPrototypeOf(target)) use('addEventListener', obj[p].bind(target));
-      else if ($.Machine.prototype.isPrototypeOf(target)) use('on', obj[p])
+      if (EventTarget.prototype.isPrototypeOf(target))
+        p.split(' ').forEach(t => target.addEventListener(t, obj[p].bind(target)));
+      else if ($.Machine.prototype.isPrototypeOf(target))
+        p.split(' ').forEach(t => target.on(t, obj[p]))
     }
     else if (p in target)
       $.targets(obj[p], target[p]);

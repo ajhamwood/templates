@@ -2,64 +2,78 @@
 <html>
 <head>
   <title>Title</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="keywords" content="key, words">
-  <meta name="description" content="Description.">
-  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta name='keywords' content='key, words'>
+  <meta name='description' content='Description.'>
+  <link rel='icon' type='image/x-icon' href='data:image/x-icon;base64,'>
   <style>
+html, body { height: 100% }
 body { margin: 0 }
   </style>
 </head>
 <body>
-  <!-- html content goes here -->
+  <button>Test</button>
   <script>
 // Utilities
+var $ = (wm => { let v = Object.values, r = Promise.resolve.bind(Promise),
+    test = (obj, con) => obj.constructor === con || con.prototype.isPrototypeOf(obj),
+    add = (k, t, fn, es = wm.get(k) || {}) => { remove(k, t, fn.name); k.addEventListener(t, (es[t] = es[t] || {})[fn.name] = fn); wm.set(k, es) },
+    remove = (k, t, fname, es = wm.get(k)) => { if (es && t in es && fname in es[t]) {
+      k.removeEventListener(t, es[t][fname]); delete es[t][fname] && v(es[t]).length || delete es[t] && v(es).length || wm.delete(k) } };
+
 //   $ enhances querySelectorAll
-const $ = Object.assign((sel, node = document) => [...node.querySelectorAll(sel).values()], {
+  return Object.assign((sel, node = document) => v(node.querySelectorAll(sel)), {
 
 //   $.Machine creates state machines for the page
-  Machine: function (state) {
-    let es = {}, v = Object.values, r = Promise.resolve.bind(Promise); Object.seal(state);
-    return Object.assign(this, {
-      getState () { return state },
-      on (e, fn) { (es[e] = es[e] || {})[fn.name] = fn; return this },
-      stop (e, fname = '') { e in es && delete es[e][fname]; return this },
-      emit (e, ...args) { return e in es && v(es[e]).reduce((s, fn) => (fn.apply(s, args), s), state) },
-      emitAsync (e, ...args) { return e in es && v(es[e]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
+    Machine: function (state) { let es = {}; Object.seal(state);
+      return Object.assign(this, {
+        state () { return state },
+        on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
+        emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
 
-//   $.targets adds event listeners to nested objects, indexed by regex
-  targets (obj, target = window) {
-    let p, use = (m, fn) => { for (let es = p.split(' '), i = 0; i < es.length; i++) target[m](es[i], fn) };
-    for (p in obj) if (Function.prototype.isPrototypeOf(obj[p])) {
-      if (EventTarget.prototype.isPrototypeOf(target)) use('addEventListener', obj[p].bind(target));
-      else if ($.Machine.prototype.isPrototypeOf(target)) use('on', obj[p])
-    } else if (p in target) $.targets(obj[p], target[p]);
-    else for (let k in target) if (k.match(new RegExp(`^${p}$`))) $.targets(obj[p], target[k]) },
+//   $.pipe manages event chronology
+    pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || r()).then(() =>
+      Promise.all(ands.map(ors => test(ors, Array) ? Promise.race(ors.map(fn => fn())) : ors()))))({}),
 
-//   $.queries adds event listeners to DOM nodes, indexed by selector
-  queries (obj, node) {
-    for (let q in obj) for (let e in obj[q]) for (let ns = $(q, node) || [], es = e.split(' '), i = 0; i < es.length; i++)
-      ns.forEach(n => n.addEventListener(es[i], obj[q][e].bind(n))) },
+//   $.targets recursively adds event listeners to objects and removes them by name, indexed by regex
+    targets (obj, target = window) {
+      for (let ts in obj) if (test(obj[ts], Function)) { if (test(target, $.Machine)) ts.split(' ').forEach(t => target.on(t, obj[ts]));
+        else if (test(target, EventTarget)) ts.split(' ').forEach(t => add(target, t, obj[ts].bind(target))) }
+      else if (test(obj[ts], String)) { if (test(target, $.Machine)) ts.split(' ').forEach(t => target.stop(t, obj[ts]));
+        else if (test(target, EventTarget)) ts.split(' ').forEach(t => remove(target, t, 'bound ' + obj[ts])) }
+      else if (ts in target) $.targets(obj[ts], target[ts]);
+      else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
+
+//   $.queries adds event listeners to DOM nodes and removes them by name, indexed by selector
+    queries (obj, root) {
+      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+        if (test(obj[q][ts], Function)) ts.split(' ').forEach(t => ns.forEach(n => add(n, t, obj[q][ts].bind(n))));
+        else if (test(obj[q][ts], String)) ts.split(' ').forEach(t => ns.forEach(n => remove(n, t, 'bound ' + obj[q][ts]))) } },
 
 //   $.load enhances importNode
-  load (id, dest = 'body') { $(dest).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } })
+    load (id, dest = 'body') {
+      let stamp = document.importNode($('template#' + id)[0].content, true);
+      return $(dest).map(n => v(stamp.cloneNode(true).childNodes).map(c => n.appendChild(c))) } }) })(new WeakMap());
+
 
 // Page state
-var app1 = new $.Machine({ a: 1 }),
-    app2 = { b: new $.Machine({ c: 2 })};
+var app = new $.Machine({ c: 0 });
 
 // Events
-$.targets({
-  load () {
-    console.log('hello');
-    app1.emit('test1');
-    app2.b.emit('test2')
-  },
-  app1: { test1 () { console.log('pass1', this.a) } },
-  app2: { b: { test2 () { console.log('pass2', this.c) } } }
-});
-$.queries({})
+$.targets({ 'focus blur': function test (e) { console.log('fails') } })
+$.targets({ 'focus blur': function test (e) { console.log(e.type, app.emit('++').c) } })
+// $.targets({ focus: 'test' })
+
+$.targets({ app: { '++' () { this.c++ } } });
+// $.targets({ app: { '++': '++' } })
+// app.stop('++', '++')
+
+$.queries({ button: { click () { console.log('click', app.emit('++').c) } } })
+// $.queries({ button: { click: 'click' } })
+
   </script>
   <noscript><h6>Only viewable with JavaScript enabled.</h6></noscript>
 </body>
