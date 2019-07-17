@@ -41,11 +41,21 @@ $.Machine = function (state) {
     },
     emit (e, ...args) {
       return e in es && v(es[e])
-        .reduce((s, fn) => (fn.apply(s, args), s), state)
+        .reduce(
+          (s, fn) => (fn.apply(s, args), s),
+          state
+        )
     },
     emitAsync (e, ...args) {
       return e in es && v(es[e])
-        .reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state))
+        .reduce(
+          (p, fn) =>
+            p.then(s =>
+              r(fn.apply(s, args))
+                .then(() => s)
+            ),
+          r(state)
+        )
     }
   })
 };
@@ -58,9 +68,14 @@ $.Machine = function (state) {
 
 $.pipe = (ps =>
   (p, ...ands) =>
-    ps[p] = (ps[p] || Promise.resolve()).then(() =>
-      Promise.all(ands.map(ors =>
-        Array.prototype.isPrototypeOf(ors) ? Promise.race(ors.map(fn => fn())) : ors())))
+    ps[p] = (ps[p] || Promise.resolve())
+      .then(() =>
+        Promise.all(ands.map(ors =>
+          Array.prototype.isPrototypeOf(ors) ?
+            Promise.race(ors.map(fn => fn())) :
+            ors()
+        ))
+      )
 )({}),
 
 
@@ -71,10 +86,11 @@ $.pipe = (ps =>
 
 $.queries = function (obj, node) {
   for (let q in obj) {
-    let ns = $(q, node) || [];
-    for (let e in obj[q])
-      e.split(' ').forEach(t =>
-        ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n))))
+    let ns = $(q, node);
+    if (ns.length)
+      for (let e in obj[q])
+        e.split(' ').forEach(t =>
+          ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n))))
   }
 },
 

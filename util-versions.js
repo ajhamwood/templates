@@ -65,7 +65,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
 })()
 
@@ -87,7 +87,7 @@
       } else if (ts in target) $.targets(obj[ts], target[ts]);
       else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
 })()
 
@@ -109,7 +109,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
 })()
 
@@ -131,7 +131,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
 })()
 
@@ -154,7 +154,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
 })()
 
@@ -176,7 +176,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
     load (id, dest = 'body') { $(dest).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } });
 })()
@@ -199,7 +199,7 @@
         else if ($.Machine.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.on(t, obj[ts]))
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
     load (id, dest = 'body') {
       let stamp = document.importNode($('template#' + id)[0].content, true);
@@ -226,7 +226,7 @@
       } else if (ts in target) $.targets(obj[ts], target[ts]);
       else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
     queries (obj, root) {
-      for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+      for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
     load (id, dest = 'body') {
       let stamp = document.importNode($('template#' + id)[0].content, true);
@@ -258,7 +258,7 @@
         else if (ts in target) $.targets(obj[ts], target[ts]);
         else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
       queries (obj, root) {
-        for (let q in obj) { let ns = $(q, root); for (let ts in obj[q])
+        for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
           if (test(obj[q][ts], Function)) ts.split(' ').forEach(t => ns.forEach(n => add(n, t, obj[q][ts].bind(n))));
           else if (test(obj[q][ts], String)) ts.split(' ').forEach(t => ns.forEach(n => remove(n, t, 'bound ' + obj[q][ts]))) } },
       load (id, dest = 'body') {
