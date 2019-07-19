@@ -1,5 +1,5 @@
 // End version string with '-dev' to set developer environment mode
-const VERSION = 'v0.0.000-dev',
+const VERSION = 'v0.0.001-dev',
       ENV = /-dev$/.test(VERSION) ? 'development' : 'production',
       CACHE = 'offline';
 
@@ -24,6 +24,5 @@ self.addEventListener('fetch', e => {
     fetch(e.request) :
     caches.open(CACHE)
       .then(cache => cache.match(e.request)
-        .then(retrieved => (retrieved ? Promise.resolve(retrieved) : fetch(e.request)))
-        .then(response => (v || cache.put(e.request, response), response))))
-})
+        .then(retrieved => retrieved || fetch(e.request))
+        .then(response => (v || cache.put(e.request, response.clone()), response)))) })

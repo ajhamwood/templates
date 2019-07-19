@@ -5,7 +5,10 @@
 //     @param {ParentNode} [node = document] - Optional selector root
 
 function $ (sel, node = document) {
-  return [...node.querySelectorAll(sel).values()]
+  return [
+    ... node.querySelectorAll(sel)
+            .values()
+  ]
 }
 
 
@@ -26,38 +29,51 @@ $.Machine = function (state) {
   let es = {},
       v = Object.values,
       r = Promise.resolve.bind(Promise);
+
   Object.seal(state);
-  return Object.assign(this, {
-    getState () {
-      return state
-    },
-    on (e, fn) {
-      (es[e] = es[e] || {})[fn.name] = fn;
-      return this
-    },
-    stop (e, fname = '') {
-      e in es && delete es[e][fname];
-      return this
-    },
-    emit (e, ...args) {
-      return e in es && v(es[e])
-        .reduce(
-          (s, fn) => (fn.apply(s, args), s),
-          state
-        )
-    },
-    emitAsync (e, ...args) {
-      return e in es && v(es[e])
-        .reduce(
-          (p, fn) =>
-            p.then(s =>
-              r(fn.apply(s, args))
-                .then(() => s)
-            ),
-          r(state)
-        )
+
+  return Object.assign(
+    this,
+    {
+      state () {
+        return state
+      },
+
+      on (t, fn) {
+        (es[t] = es[t] || {})
+          [fn.name] = fn;
+        return this
+      },
+
+      stop (t, fname = '') {
+        t in es &&
+          delete es[t][fname] &&
+            ( v(es[t]).length ||
+              delete es[t] );
+        return this
+      },
+
+      emit (t, ... args) {
+        return t in es &&
+          v(es[t]).reduce(
+            (s, fn) => (fn.apply(s, args), s),
+            state
+          )
+      },
+
+      emitAsync (t, ... args) {
+        return t in es &&
+          v(es[t]).reduce(
+            (p, fn) =>
+              p.then(s =>
+                r(fn.apply(s, args))
+                  .then(() => s)
+              ),
+            r(state)
+          )
+      }
     }
-  })
+  )
 };
 
 
@@ -67,14 +83,21 @@ $.Machine = function (state) {
 //       - Pipeline is released after all first level Promises, and one second level Promise from each Array, resolves
 
 $.pipe = (ps =>
-  (p, ...ands) =>
+  (p, ... ands) =>
     ps[p] = (ps[p] || Promise.resolve())
       .then(() =>
-        Promise.all(ands.map(ors =>
-          Array.prototype.isPrototypeOf(ors) ?
-            Promise.race(ors.map(fn => fn())) :
-            ors()
-        ))
+        Promise.all(
+          ands.map(ors =>
+            Array.prototype.isPrototypeOf(ors) &&
+              Promise.race(
+                ors.map(fn =>
+                  fn()
+                )
+              ) ||
+            Function.prototype.isPrototypeOf(ors) &&
+              ors()
+          )
+        )
       )
 )({}),
 
@@ -87,10 +110,15 @@ $.pipe = (ps =>
 $.queries = function (obj, node) {
   for (let q in obj) {
     let ns = $(q, node);
+
     if (ns.length)
       for (let e in obj[q])
-        e.split(' ').forEach(t =>
-          ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n))))
+        e .split(' ')
+          .forEach(t =>
+            ns.forEach(n =>
+              n.addEventListener(t, obj[q][e].bind(n))
+            )
+          )
   }
 },
 
@@ -105,15 +133,22 @@ $.targets = function (obj, target = window, p) {
   for (p in obj)
     if (Function.prototype.isPrototypeOf(obj[p])) {
       if (EventTarget.prototype.isPrototypeOf(target))
-        p.split(' ').forEach(t => target.addEventListener(t, obj[p].bind(target)));
+        p .split(' ')
+          .forEach(t =>
+            target.addEventListener(t, obj[p].bind(target))
+          );
       else if ($.Machine.prototype.isPrototypeOf(target))
-        p.split(' ').forEach(t => target.on(t, obj[p]))
+        p .split(' ')
+          .forEach(t =>
+            target.on(t, obj[p])
+          )
     }
     else if (p in target)
       $.targets(obj[p], target[p]);
     else
       for (let k in target)
-        if (k.match(new RegExp(`^${p}$`))) $.targets(obj[p], target[k])
+        if (k.match(new RegExp(`^${p}$`)))
+          $.targets(obj[p], target[k])
 },
 
 
@@ -123,9 +158,19 @@ $.targets = function (obj, target = window, p) {
 //     @return {Array.Array} - The imported nodes at each destination selector hit
 
 $.load = function (id, dest = 'body') {
-  let stamp = document.importNode($('template#' + id)[0].content, true);
+  let stamp = document.importNode(
+    $('template#' + id)[0].content,
+    true
+  );
+
   return $(dest).map(n =>
-    [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))
+    [
+      ... stamp.cloneNode(true).childNodes
+               .values()
+    ]
+      .map(c =>
+        n.appendChild(c)
+      )
   )
 };
 

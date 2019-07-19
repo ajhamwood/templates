@@ -9,7 +9,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
     queries (obj, root) {
       for (let q in obj) { let ns = q ? $(q, root) : [window, document]; for (let ts in obj[q])
@@ -24,7 +24,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     queries (obj, root) {
@@ -40,7 +40,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     queries (obj, root) {
@@ -56,7 +56,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     targets (obj, target = window) {
@@ -77,7 +77,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     targets (obj, target = window) {
@@ -99,7 +99,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...fns) => ps[p] = (ps[p] || Promise.resolve()).then(fn))({}),
@@ -121,7 +121,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...fns) => ps[p] = (ps[p] || Promise.resolve()).then(() => Promise.all(fns.map(fn => fn()))))({}),
@@ -143,7 +143,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || Promise.resolve()).then(() =>
@@ -166,7 +166,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...fns) => ps[p] = (ps[p] || Promise.resolve()).then(fn))({}),
@@ -189,7 +189,7 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...fns) => ps[p] = (ps[p] || Promise.resolve()).then(fn))({}),
@@ -214,11 +214,11 @@
       return Object.assign(this, {
         state () { return state },
         on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-        stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+        stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
-    pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || Promise.resolve()).then(() =>
-      Promise.all(ands.map(ors => Array.prototype.isPrototypeOf(ors) ? Promise.race(ors.map(fn => fn())) : ors()))))({}),
+    pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || Promise.resolve()).then(() => Promise.all(ands.map(ors =>
+      Array.prototype.isPrototypeOf(ors) && Promise.race(ors.map(fn => fn())) || Function.prototype.isPrototypeOf(ors) && ors()))))({}),
     targets (obj, target = window) {
       for (let ts in obj) if (Function.prototype.isPrototypeOf(obj[ts])) {
         if (EventTarget.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.addEventListener(t, obj[ts].bind(target)));
@@ -239,17 +239,17 @@
       test = (obj, con) => obj.constructor === con || con.prototype.isPrototypeOf(obj),
       add = (k, t, fn, es = wm.get(k) || {}) => { remove(k, t, fn.name); k.addEventListener(t, (es[t] = es[t] || {})[fn.name] = fn); wm.set(k, es) },
       remove = (k, t, fname, es = wm.get(k)) => { if (es && t in es && fname in es[t]) {
-        k.removeEventListener(t, es[t][fname]); delete es[t][fname] && v(es[t]).length || delete es[t] && v(es).length || wm.delete(k) } };
+        k.removeEventListener(t, es[t][fname]); delete es[t][fname] && (v(es[t]).length || delete es[t]) && (v(es).length || wm.delete(k)) } };
     return Object.assign((sel, node = document) => v(node.querySelectorAll(sel)), {
       Machine: function (state) { let es = {}; Object.seal(state);
         return Object.assign(this, {
           state () { return state },
           on (t, fn) { (es[t] = es[t] || {})[fn.name] = fn; return this },
-          stop (t, fname = '') { t in es && delete es[t][fname] && v(es[t]).length || delete es[t]; return this },
+          stop (t, fname = '') { t in es && delete es[t][fname] && (v(es[t]).length || delete es[t]); return this },
           emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
           emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
-      pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || r()).then(() =>
-        Promise.all(ands.map(ors => test(ors, Array) ? Promise.race(ors.map(fn => fn())) : ors()))))({}),
+      pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || r()).then(() => Promise.all(ands.map(ors =>
+        test(ors, Array) && Promise.race(ors.map(fn => fn())) || test(ors, Function) && ors()))))({}),
       targets (obj, target = window) {
         for (let ts in obj) if (test(obj[ts], Function)) { if (test(target, $.Machine)) ts.split(' ').forEach(t => target.on(t, obj[ts]));
           else if (test(target, EventTarget)) ts.split(' ').forEach(t => add(target, t, obj[ts].bind(target))) }
