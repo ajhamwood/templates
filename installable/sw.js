@@ -14,9 +14,9 @@ self.addEventListener('install', e => e.waitUntil(caches.delete(CACHE)
       'style.css'
     ]);
     cache.put(new Request('version'), new Response(VERSION))
-  }).then(skipWaiting)));
+  })));
 
-self.addEventListener('activate', e => e.waitUntil(clients.claim()));
+self.addEventListener('message', e => e.data === 'skipWaiting' && skipWaiting())
 
 self.addEventListener('fetch', e => {
   let v = /\/version$/.test(e.request.url);
