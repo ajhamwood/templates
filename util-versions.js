@@ -1,5 +1,4 @@
 // TODO: generate utils from form
-// TODO: removeEventListener for EventTargets
 
 (() => {
   // 11 sloc: DOM events + basic custom events
@@ -13,7 +12,7 @@
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
     queries (obj, root) {
       for (let q in obj) { let ns = q ? $(q, root) : [window, document]; for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -29,7 +28,7 @@
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     queries (obj, root) {
       for (let q in obj) { let ns = q ? $(q, root) : [window, document]; for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -45,7 +44,7 @@
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     queries (obj, root) {
       for (let q in obj) { let ns = q ? $(q, root) : [window, document]; for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -66,7 +65,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -88,7 +87,7 @@
       else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -110,7 +109,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -132,7 +131,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -155,7 +154,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } } });
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } } });
 })()
 
 (() => {
@@ -177,7 +176,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
     load (id, dest = 'body') { $(dest).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } });
 })()
 
@@ -200,7 +199,7 @@
       } else $.targets(obj[ts], target[ts]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
     load (id, dest = 'body') {
       let stamp = document.importNode($('template#' + id)[0].content, true);
       return $(dest).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
@@ -227,7 +226,7 @@
       else for (let k in target) if (k.match(new RegExp(`^${ts}$`))) $.targets(obj[ts], target[k]) },
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
-        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][e].bind(n)))) } },
+        ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
     load (id, dest = 'body') {
       let stamp = document.importNode($('template#' + id)[0].content, true);
       return $(dest).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
