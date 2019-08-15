@@ -36,7 +36,7 @@ var $ = (wm => { let v = Object.values, r = Promise.resolve.bind(Promise),
 
 //   $.pipe manages async event chronology
     pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || r()).then(() => Promise.all(ands.map(ors =>
-      test(ors, Array) && Promise.race(ors.map(fn => fn())) || test(ors, Function) && ors()))))({}),
+      (test(ors, Array) && Promise.race(ors.map(fn => fn()))) || (test(ors, Function) && ors())))))({}),
 
 //   $.targets recursively adds event listeners to objects and removes them by name, indexed by regex
     targets (obj, target = window) {
@@ -54,9 +54,9 @@ var $ = (wm => { let v = Object.values, r = Promise.resolve.bind(Promise),
         else if (test(obj[q][ts], String)) ts.split(' ').forEach(t => ns.forEach(n => remove(n, t, 'bound ' + obj[q][ts]))) } },
 
 //   $.load enhances importNode
-    load (id, dest = 'body') {
+    load (id, dest = 'body', root) {
       let stamp = document.importNode($('template#' + id)[0].content, true);
-      return $(dest).map(n => v(stamp.cloneNode(true).childNodes).map(c => n.appendChild(c))) } }) })(new WeakMap());
+      return $(dest, root).map(n => v(stamp.cloneNode(true).childNodes).map(c => n.appendChild(c))) } }) })(new WeakMap());
 
 // Page state
 var app = new $.Machine({});

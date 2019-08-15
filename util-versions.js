@@ -177,7 +177,7 @@
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
-    load (id, dest = 'body') { $(dest).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } });
+    load (id, dest = 'body', root) { $(dest, root).forEach(n => n.appendChild(document.importNode($('template#' + id)[0].content, true))) } });
 })()
 
 (() => {
@@ -200,9 +200,9 @@
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
-    load (id, dest = 'body') {
+    load (id, dest = 'body', root) {
       let stamp = document.importNode($('template#' + id)[0].content, true);
-      return $(dest).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
+      return $(dest, root).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
 })()
 
 (() => {
@@ -217,7 +217,7 @@
         emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
         emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
     pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || Promise.resolve()).then(() => Promise.all(ands.map(ors =>
-      Array.prototype.isPrototypeOf(ors) && Promise.race(ors.map(fn => fn())) || Function.prototype.isPrototypeOf(ors) && ors()))))({}),
+      (Array.prototype.isPrototypeOf(ors) && Promise.race(ors.map(fn => fn()))) || (Function.prototype.isPrototypeOf(ors) && ors())))))({}),
     targets (obj, target = window) {
       for (let ts in obj) if (Function.prototype.isPrototypeOf(obj[ts])) {
         if (EventTarget.prototype.isPrototypeOf(target)) ts.split(' ').forEach(t => target.addEventListener(t, obj[ts].bind(target)));
@@ -227,9 +227,9 @@
     queries (obj, root) {
       for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
         ts.split(' ').forEach(t => ns.forEach(n => n.addEventListener(t, obj[q][ts].bind(n)))) } },
-    load (id, dest = 'body') {
+    load (id, dest = 'body', root) {
       let stamp = document.importNode($('template#' + id)[0].content, true);
-      return $(dest).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
+      return $(dest, root).map(n => [...stamp.cloneNode(true).childNodes.values()].map(c => n.appendChild(c))) } });
 })()
 
 (() => {
@@ -248,7 +248,7 @@
           emit (t, ...args) { return t in es && v(es[t]).reduce((s, fn) => (fn.apply(s, args), s), state) },
           emitAsync (t, ...args) { return t in es && v(es[t]).reduce((p, fn) => p.then(s => r(fn.apply(s, args)).then(() => s)), r(state)) } }) },
       pipe: (ps => (p, ...ands) => ps[p] = (ps[p] || r()).then(() => Promise.all(ands.map(ors =>
-        test(ors, Array) && Promise.race(ors.map(fn => fn())) || test(ors, Function) && ors()))))({}),
+        (test(ors, Array) && Promise.race(ors.map(fn => fn()))) || (test(ors, Function) && ors())))))({}),
       targets (obj, target = window) {
         for (let ts in obj) if (test(obj[ts], Function)) { if (test(target, $.Machine)) ts.split(' ').forEach(t => target.on(t, obj[ts]));
           else if (test(target, EventTarget)) ts.split(' ').forEach(t => add(target, t, obj[ts].bind(target))) }
@@ -260,7 +260,7 @@
         for (let q in obj) { let ns = $(q, root); if (ns.length) for (let ts in obj[q])
           if (test(obj[q][ts], Function)) ts.split(' ').forEach(t => ns.forEach(n => add(n, t, obj[q][ts].bind(n))));
           else if (test(obj[q][ts], String)) ts.split(' ').forEach(t => ns.forEach(n => remove(n, t, 'bound ' + obj[q][ts]))) } },
-      load (id, dest = 'body') {
+      load (id, dest = 'body', root) {
         let stamp = document.importNode($('template#' + id)[0].content, true);
-        return $(dest).map(n => v(stamp.cloneNode(true).childNodes).map(c => n.appendChild(c))) } }) })(new WeakMap());
+        return $(dest, root).map(n => v(stamp.cloneNode(true).childNodes).map(c => n.appendChild(c))) } }) })(new WeakMap());
 })()

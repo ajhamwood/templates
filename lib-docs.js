@@ -88,14 +88,15 @@ $.pipe = (ps =>
       .then(() =>
         Promise.all(
           ands.map(ors =>
-            Array.prototype.isPrototypeOf(ors) &&
+            ( Array.prototype.isPrototypeOf(ors) &&
               Promise.race(
                 ors.map(fn =>
                   fn()
                 )
-              ) ||
-            Function.prototype.isPrototypeOf(ors) &&
-              ors()
+              )
+            ) ||
+            ( Function.prototype.isPrototypeOf(ors) &&
+              ors() )
           )
         )
       )
@@ -157,13 +158,13 @@ $.targets = function (obj, target = window, p) {
 //     @param {String} [dest = 'body'] - Optional selector indicating which nodes to append the template to
 //     @return {Array.Array} - The imported nodes at each destination selector hit
 
-$.load = function (id, dest = 'body') {
+$.load = function (id, dest = 'body', root) {
   let stamp = document.importNode(
     $('template#' + id)[0].content,
     true
   );
 
-  return $(dest).map(n =>
+  return $(dest, root).map(n =>
     [
       ... stamp.cloneNode(true).childNodes
                .values()
